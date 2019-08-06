@@ -1,8 +1,7 @@
 //for our todos routes
-
 const express = require('express');
 const router = express.Router();
-const db = require('../models');
+const helpers = require('../helper/todos');
 /* requests were passed here from the main server,
 	our first arg in the app.use() line from that server
 	gets prepended so router.get('/' ... is really {first arg}/
@@ -14,39 +13,22 @@ const db = require('../models');
 	});
 */
 
-router.get('/', (req,res)=> {
-	db.Todo.find().then((todos) =>{
-		res.json(todos);
-	}).catch((err) => {
-		res.send(err)
-		console.log("error encountered in getting")
-	});
-});
+/*
+instead of :
+	router.get('/', helpers.getTodos)
+	router.put('/', helpers.createTodos)
 
-router.post('/', (req, res) => {
-	db.Todo.create(req.body)
-	.then((newTodo) => {
-		res.json(newTodo);
-	}).catch((err) => {
+can use less code to do the same, as below
+*/
+router.route('/')
+	.get(helpers.getTodos)
+	.post(helpers.createTodo);
 
-	})
-});
+router.route('/:todoId')
+	.get(helpers.showTodo)
+	.put(helpers.updateTodo);
 
-router.get("/:todoId", (req, res)=>{
-	db.Todo.findById(req.params.todoId)
-	.then((foundDBItem)=>{
-		res.send(foundDBItem);
-	}).catch((err)=>{
-		res.send(err);
-	})
-});
-//this is for updating a value in the db,
-//set false to true, in this case
-router.put('/:todoId', (req, res) => {
-	db.Todo.findOneAndUpdate({_id : req.params.todoId}, req.body, {new:true})
-	.then((found)=>{res.send(found)})
-	.catch((err)=>res.send(err));
-});
+router.delete('/:todoId', helpers.deleteTodo)
 
 module.exports = router;
 // export default router;
