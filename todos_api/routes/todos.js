@@ -17,7 +17,6 @@ const helpers = require('../helper/todos');
 instead of :
 	router.get('/', helpers.getTodos)
 	router.put('/', helpers.createTodos)
-
 can use less code to do the same, as below
 */
 router.route('/')
@@ -26,9 +25,8 @@ router.route('/')
 
 router.route('/:todoId')
 	.get(helpers.showTodo)
-	.put(helpers.updateTodo);
-
-router.delete('/:todoId', helpers.deleteTodo)
+	.put(helpers.updateTodo)
+	.delete(helpers.deleteTodo);
 
 module.exports = router;
 // export default router;
